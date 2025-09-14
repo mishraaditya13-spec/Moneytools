@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <title>MoneyTools – Earn with Calculators</title>
+  <meta name="description" content="A mobile-first calculator microsite with EMI, SIP, Discount, and Profit Margin calculators. Includes WhatsApp lead capture and affiliate slots." />
+  <meta name="theme-color" content="#16a34a" />
+  <style>
+    :root{
+      --bg:#0b1220; --panel:#0f172a; --card:#0b1325;
+      --muted:#94a3b8; --text:#e5e7eb; --primary:#16a34a; --accent:#22c55e;
+      --radius:18px; --border:1px solid rgba(255,255,255,.08); --shadow:0 10px 30px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    html,body{margin:0; background:linear-gradient(180deg,#0b1220,#09101c 60%,#080e18); color:var(--text); font-family:system-ui, -apple-system, Segoe UI, Roboto, 'Helvetica Neue', Arial;}
+    header{position:sticky; top:0; z-index:10; background:rgba(11,18,32,.85); backdrop-filter: blur(6px); border-bottom: var(--border)}
+    .wrap{max-width:980px; margin:0 auto; padding:16px}
+    .row{display:flex; align-items:center; gap:10px; flex-wrap:wrap}
+    .brand{display:flex; align-items:center; gap:10px}
+    .badge{width:40px;height:40px;border-radius:14px; background:linear-gradient(135deg,#16a34a,#4ade80); display:grid; place-items:center; font-weight:900; box-shadow:var(--shadow)}
+    h1{font-size:20px; margin:0}
+    .muted{color:var(--muted); font-size:12px}
+    .grid{display:grid; grid-template-columns:1fr; gap:12px}
+    @media(min-width:760px){ .grid{grid-template-columns:1fr 1fr} }
+    .card{background:var(--card); border:var(--border); border-radius:var(--radius); box-shadow:var(--shadow); padding:14px}
+    .title{font-weight:800; font-size:16px; margin-bottom:8px}
+    label{font-size:12px; color:#cbd5e1}
+    input, select, textarea{width:100%; background:#0f172a; color:var(--text); border:var(--border); border-radius:12px; padding:10px 12px; outline:none}
+    .btn{border:none; border-radius:12px; padding:10px 14px; font-weight:700; color:white; cursor:pointer; box-shadow:var(--shadow)}
+    .btn-primary{background:linear-gradient(135deg,#16a34a,#22c55e)}
+    .btn-alt{background:linear-gradient(135deg,#2563eb,#60a5fa)}
+    .btn-danger{background:linear-gradient(135deg,#ef4444,#fb7185)}
+    .toolbar{display:flex; gap:8px; flex-wrap:wrap; margin-top:8px}
+    .result{margin-top:8px; padding:10px; background:#0e1729; border:var(--border); border-radius:12px}
+    .ad{background:linear-gradient(180deg,rgba(255,255,255,.04),rgba(255,255,255,.02)); border:var(--border); border-radius:14px; padding:14px; text-align:center; color:var(--muted)}
+    .small{font-size:11px; color:#a8b3c7}
+    .pill{display:inline-flex; gap:6px; align-items:center; padding:6px 10px; border-radius:999px; background:#0f1a30; border:var(--border); font-size:11px; color:#cbd5e1}
+    .section-title{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px}
+    .link{color:#7dd3fc; text-decoration:none}
+    .two{display:grid; grid-template-columns:1fr 1fr; gap:8px}
+    .footer{padding:16px; text-align:center; color:var(--muted)}
+    .note{font-size:12px; color:#cbd5e1}
+    .hr{height:1px; background:rgba(255,255,255,.06); margin:10px 0}
+    .chips{display:flex; gap:6px; flex-wrap:wrap}
+    .chip{padding:6px 10px; background:#0f172a; border:var(--border); border-radius:10px; font-size:11px}
+    .right{margin-left:auto}
+    .success{color:#86efac}
+    .warn{color:#fde68a}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap row">
+      <div class="brand">
+        <div class="badge">₹</div>
+        <div>
+          <h1>MoneyTools – Earn with Calculators</h1>
+          <div class="muted">Mobile-first • SEO-friendly • Monetize via Ads, Affiliates & Leads</div>
+        </div>
+      </div>
+      <div class="right">
+        <button class="btn btn-alt" onclick="openSettings()">Settings</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <div class="grid">
+      <!-- EMI Calculator -->
+      <section class="card">
+        <div class="section-title">
+          <div class="title">EMI Calculator</div>
+          <span class="pill">Finance</span>
+        </div>
+        <div class="two">
+          <div>
+            <label>Loan Amount</label>
+            <input id="emiAmount" type="number" placeholder="e.g. 300000" />
+          </div>
+          <div>
+            <label>Interest (annual %)</label>
+            <input id="emiRate" type="number" placeholder="e.g. 10" />
+          </div>
+        </div>
+        <div class="two" style="margin-top:8px">
+          <div>
+            <label>Tenure (months)</label>
+            <input id="emiMonths" type="number" placeholder="e.g. 36" />
+          </div>
+          <div>
+            <label>Processing Fee % (optional)</label>
+            <input id="emiFee" type="number" placeholder="e.g. 1.5" />
+          </div>
+        </div>
+        <div class="toolbar">
+          <button class="btn btn-primary" onclick="calcEMI()">Calculate</button>
+          <button class="btn btn-danger" onclick="resetEMI()">Clear</button>
+        </div>
+        <div id="emiResult" class="result small">Enter values above to see results.</div>
+      </section>
+
+      <!-- SIP Calculator -->
+      <section class="card">
+        <div class="section-title">
+          <div class="title">SIP Calculator</div>
+          <span class="pill">Invest</span>
+        </div>
+        <div class="two">
+          <div>
+            <label>Monthly Investment</label>
+            <input id="sipMonthly" type="number" placeholder="e.g. 10000" />
+          </div>
+          <div>
+            <label>Expected Return (annual %)</label>
+            <input id="sipRate" type="number" placeholder="e.g. 12" />
+          </div>
+        </div>
+        <div class="two" style="margin-top:8px">
+          <div>
+            <label>Years</label>
+            <input id="sipYears" type="number" placeholder="e.g. 10" />
+          </div>
+          <div>
+            <label>Step-up % per year (optional)</label>
+            <input id="sipStep" type="number" placeholder="e.g. 5" />
+          </div>
+        </div>
+        <div class="toolbar">
+          <button class="btn btn-primary" onclick="calcSIP()">Calculate</button>
+          <button class="btn btn-danger" onclick="resetSIP()">Clear</button>
+        </div>
+        <div id="sipResult" class="result small">Enter values above to see results.</div>
+      </section>
+
+      <!-- Discount Calculator -->
+      <section class="card">
+        <div class="section-title">
+          <div class="title">Discount Calculator</div>
+          <span class="pill">Shopping</span>
+        </div>
+        <div class="two">
+          <div>
+            <label>Original Price</label>
+            <input id="discPrice" type="number" placeholder="e.g. 1499" />
+          </div>
+          <div>
+            <label>Discount %</label>
+            <input id="discPct" type="number" placeholder="e.g. 25" />
+          </div>
+        </div>
+        <div class="toolbar">
+          <button class="btn btn-primary" onclick="calcDisc()">Calculate</button>
+          <button class="btn btn-danger" onclick="resetDisc()">Clear</button>
+        </div>
+        <div id="discResult" class="result small">Enter values above to see results.</div>
+      </section>
+
+      <!-- Profit Margin Calculator -->
+      <section class="card">
+        <div class="section-title">
+          <div class="title">Profit Margin Calculator</div>
+          <span class="pill">Business</span>
+        </div>
+        <div class="two">
+          <div>
+            <label>Cost Price</label>
+            <input id="pmCost" type="number" placeholder="e.g. 500" />
+          </div>
+          <div>
+            <label>Selling Price</label>
+            <input id="pmSell" type="number" placeholder="e.g. 799" />
+          </div>
+        </div>
+        <div class="toolbar">
+          <button class="btn btn-primary" onclick="calcPM()">Calculate</button>
+          <button class="btn btn-danger" onclick="resetPM()">Clear</button>
+        </div>
+        <div id="pmResult" class="result small">Enter values above to see results.</div>
+      </section>
+
+      <!-- Simple Invoice (CSV) -->
+      <section class="card">
+        <div class="section-title">
+          <div class="title">Simple Invoice (CSV)</div>
+          <span class="pill">Services</span>
+        </div>
+        <div class="two">
+          <div>
+            <label>Item</label>
+            <input id="invItem" type="text" placeholder="Design Service" />
+          </div>
+          <div>
+            <label>Amount</label>
+            <input id="invAmt" type="number" placeholder="1000" />
+          </div>
+        </div>
+        <div class="toolbar">
+          <button class="btn btn-primary" onclick="addInv()">Add</button>
+          <button class="btn btn-alt" onclick="downloadCSV()">Download CSV</button>
+          <button class="btn btn-danger" onclick="clearInv()">Clear</button>
+        </div>
+        <div id="invList" class="result small">No items yet.</div>
+      </section>
+
+      <!-- WhatsApp Lead Form -->
+      <section class="card">
+        <div class="section-title">
+          <div class="title">Get Quote via WhatsApp</div>
+          <span class="pill">Leads</span>
+        </div>
+        <div class="two">
+          <div>
+            <label>Name</label>
+            <input id="leadName" type="text" placeholder="Your name" />
+          </div>
+          <div>
+            <label>Service</label>
+            <input id="leadService" type="text" placeholder="e.g. Website, Logo, SEO" />
+          </div>
+        </div>
+        <div style="margin-top:8px">
+          <label>Message</label>
+          <textarea id="leadMsg" placeholder="Describe your requirement..."></textarea>
+        </div>
+        <div class="toolbar">
+          <button class="btn btn-primary" onclick="sendWhatsApp()">Send on WhatsApp</button>
+        </div>
+        <div class="small">Tip: Set your WhatsApp number in Settings (top right).</div>
+      </section>
+
+      <!-- Affiliate Panel -->
+      <section class="card">
+        <div class="section-title">
+          <div class="title">Deals & Recommendations</div>
+          <span class="pill">Affiliates</span>
+        </div>
+        <div class="chips" id="affList">
+          <!-- Filled from settings -->
+        </div>
+        <div class="hr"></div>
+        <div class="ad">
+          <div class="small">Ad Slot – paste your AdSense code in Settings → Custom HTML (appears below)</div>
+          <div id="adSlot"></div>
+        </div>
+      </section>
+
+      <!-- SEO Tips -->
+      <section class="card">
+        <div class="section-title">
+          <div class="title">How to Earn with this Page</div>
+          <span class="pill">Guide</span>
+        </div>
+        <ul class="small">
+          <li>Host this file on GitHub Pages / Netlify / your domain.</li>
+          <li>Apply for Google AdSense → paste ad code in <b>Settings → Custom HTML</b>.</li>
+          <li>Add 3–6 affiliate links in Settings (Amazon, hosting, courses, fintech apps, etc.).</li>
+          <li>Use WhatsApp lead form for your services (design, dev, tuition, editing, local services).</li>
+          <li>Share useful calculators on social media & WhatsApp groups to drive traffic.</li>
+        </ul>
+      </section>
+
+      <!-- Another Ad -->
+      <section class="card">
+        <div class="title">Sponsored</div>
+        <div class="ad" id="adBottom">Your ad could be here.</div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Settings Modal -->
+  <div id="settingsModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:50;">
+    <div class="wrap" style="max-width:760px;">
+      <div class="card" style="margin-top:40px">
+        <div class="section-title">
+          <div class="title">Settings</div>
+          <button class="btn btn-danger" onclick="closeSettings()">Close</button>
+        </div>
+        <div class="two">
+          <div>
+            <label>Your WhatsApp Number (with country code, no +)</label>
+            <input id="setPhone" type="text" placeholder="e.g. 9715XXXXXXXX" />
+          </div>
+          <div>
+            <label>Site Title</label>
+            <input id="setTitle" type="text" placeholder="MoneyTools – Earn with Calculators" />
+          </div>
+        </div>
+        <div class="hr"></div>
+        <div>
+          <label>Affiliate Links (one per line, format: Label | https://your-link)</label>
+          <textarea id="setAff" rows="5" placeholder="Amazon Best Laptops | https://amzn.to/xxxx"></textarea>
+        </div>
+        <div class="hr"></div>
+        <div>
+          <label>Custom HTML (e.g., AdSense code)</label>
+          <textarea id="setHTML" rows="5" placeholder="&lt;script&gt;/* your ad code */&lt;/script&gt;"></textarea>
+        </div>
+        <div class="toolbar">
+          <button class="btn btn-primary" onclick="saveSettings()">Save</button>
+          <button class="btn" onclick="resetSettings()">Reset</button>
+        </div>
+        <div class="small">Settings are stored locally in your browser (LocalStorage).</div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="footer small">
+    © <span id="year"></span> MoneyTools. Built for mobile. <span class="success">You control your monetization.</span>
+  </footer>
+
+  <script>
+    const $ = id => document.getElementById(id);
+    const yearEl = $('year'); yearEl.textContent = new Date().getFullYear();
+
+    /* ---------- Settings ---------- */
+    function getSettings(){
+      try{ return JSON.parse(localStorage.getItem('moneytools_settings')||'{}'); }
+      catch(e){ return {}; }
+    }
+    function setSettings(obj){
+      localStorage.setItem('moneytools_settings', JSON.stringify(obj||{}));
+    }
+    function openSettings(){
+      const s = getSettings();
+      $('setPhone').value = s.phone||'';
+      $('setTitle').value = s.title||document.title;
+      $('setAff').value = (s.aff||[]).map(x=>x.label+' | '+x.url).join('\n');
+      $('setHTML').value = s.html||'';
+      $('settingsModal').style.display = 'block';
+    }
+    function closeSettings(){ $('settingsModal').style.display = 'none'; }
+    function resetSettings(){ if(confirm('Reset settings?')){ setSettings({}); renderAffiliates(); renderCustomHTML(); closeSettings(); } }
+    function saveSettings(){
+      const lines = $('setAff').value.split('\n').map(x=>x.trim()).filter(Boolean);
+      const aff = [];
+      for(const ln of lines){
+        const parts = ln.split('|');
+        if(parts.length>=2){
+          aff.push({label:parts[0].trim(), url:parts.slice(1).join('|').trim()});
+        }
+      }
+      const s = {
+        phone: $('setPhone').value.trim(),
+        title: $('setTitle').value.trim() || 'MoneyTools – Earn with Calculators',
+        aff,
+        html: $('setHTML').value
+      };
+      setSettings(s);
+      document.title = s.title;
+      renderAffiliates(); renderCustomHTML();
+      alert('Saved!');
+    }
+
+    function renderAffiliates(){
+      const s = getSettings();
+      const wrap = $('affList');
+      wrap.innerHTML = '';
+      if(!s.aff || !s.aff.length){ wrap.innerHTML = '<span class="chip">Add affiliate links in Settings</span>'; return; }
+      for(const a of s.aff){
+        const btn = document.createElement('a');
+        btn.href = a.url; btn.target = '_blank'; btn.rel='nofollow sponsored';
+        btn.className = 'chip';
+        btn.textContent = a.label;
+        wrap.appendChild(btn);
+      }
+    }
+    function renderCustomHTML(){
+      const s = getSettings();
+      document.getElementById('adSlot').innerHTML = s.html||'<span class="small">No ad code added yet.</span>';
+    }
+
+    /* ---------- EMI ---------- */
+    function calcEMI(){
+      const P = parseFloat($('emiAmount').value||0);
+      const r = parseFloat($('emiRate').value||0)/12/100;
+      const n = parseInt($('emiMonths').value||0,10);
+      const feePct = parseFloat($('emiFee').value||0)/100;
+      if(P<=0 || r<=0 || n<=0){ $('emiResult').innerHTML='Please enter valid values.'; return; }
+      const EMI = P*r*Math.pow(1+r,n)/(Math.pow(1+r,n)-1);
+      const total = EMI*n;
+      const interest = total - P;
+      const fee = P*feePct;
+      $('emiResult').innerHTML = `
+        <b>Monthly EMI:</b> ₹${EMI.toFixed(2)}<br>
+        <b>Total Interest:</b> ₹${interest.toFixed(2)}<br>
+        <b>Total Payment:</b> ₹${(total+fee).toFixed(2)} ${feePct>0?`<span class="note">(incl. approx. fee ₹${fee.toFixed(2)})</span>`:''}
+      `;
+    }
+    function resetEMI(){ ['emiAmount','emiRate','emiMonths','emiFee'].forEach(id=>$(id).value=''); $('emiResult').innerHTML='Enter values above to see results.'; }
+
+    /* ---------- SIP with optional step-up ---------- */
+    function calcSIP(){
+      let monthly = parseFloat($('sipMonthly').value||0);
+      const rate = parseFloat($('sipRate').value||0)/100/12;
+      const years = parseInt($('sipYears').value||0,10);
+      const step = parseFloat($('sipStep').value||0)/100;
+      if(monthly<=0 || rate<0 || years<=0){ $('sipResult').innerHTML='Please enter valid values.'; return; }
+      let months = years*12;
+      let totalInvested = 0;
+      let futureValue = 0;
+      for(let y=0;y<years;y++){
+        for(let m=0;m<12;m++){
+          totalInvested += monthly;
+          futureValue = (futureValue + monthly) * (1+rate);
+        }
+        monthly *= (1+step);
+      }
+      const gain = futureValue - totalInvested;
+      $('sipResult').innerHTML = `
+        <b>Future Value:</b> ₹${futureValue.toFixed(2)}<br>
+        <b>Total Invested:</b> ₹${totalInvested.toFixed(2)}<br>
+        <b>Estimated Gain:</b> ₹${gain.toFixed(2)}
+      `;
+    }
+    function resetSIP(){ ['sipMonthly','sipRate','sipYears','sipStep'].forEach(id=>$(id).value=''); $('sipResult').innerHTML='Enter values above to see results.'; }
+
+    /* ---------- Discount ---------- */
+    function calcDisc(){
+      const price = parseFloat($('discPrice').value||0);
+      const pct = parseFloat($('discPct').value||0)/100;
+      if(price<=0 || pct<0){ $('discResult').innerHTML='Please enter valid values.'; return; }
+      const off = price*pct;
+      const final = price-off;
+      $('discResult').innerHTML = `<b>You save:</b> ₹${off.toFixed(2)} • <b>Final price:</b> ₹${final.toFixed(2)}`;
+    }
+    function resetDisc(){ ['discPrice','discPct'].forEach(id=>$(id).value=''); $('discResult').innerHTML='Enter values above to see results.'; }
+
+    /* ---------- Profit Margin ---------- */
+    function calcPM(){
+      const cost = parseFloat($('pmCost').value||0);
+      const sell = parseFloat($('pmSell').value||0);
+      if(cost<=0 || sell<=0){ $('pmResult').innerHTML='Please enter valid values.'; return; }
+      const profit = sell - cost;
+      const margin = profit / sell * 100;
+      const markup = profit / cost * 100;
+      $('pmResult').innerHTML = `<b>Profit:</b> ₹${profit.toFixed(2)} • <b>Margin:</b> ${margin.toFixed(2)}% • <b>Markup:</b> ${markup.toFixed(2)}%`;
+    }
+    function resetPM(){ ['pmCost','pmSell'].forEach(id=>$(id).value=''); $('pmResult').innerHTML='Enter values above to see results.'; }
+
+    /* ---------- Invoice CSV ---------- */
+    const inv = [];
+    function addInv(){
+      const item = $('invItem').value.trim();
+      const amt = parseFloat($('invAmt').value||0);
+      if(!item || amt<=0){ alert('Enter item and amount'); return; }
+      inv.push({item, amt});
+      $('invItem').value=''; $('invAmt').value='';
+      renderInv();
+    }
+    function renderInv(){
+      if(!inv.length){ $('invList').innerHTML='No items yet.'; return; }
+      const total = inv.reduce((a,b)=>a+b.amt,0);
+      $('invList').innerHTML = inv.map((x,i)=>`${i+1}. ${x.item} – ₹${x.amt.toFixed(2)}`).join('<br>') + `<div class="hr"></div><b>Total:</b> ₹${total.toFixed(2)}`;
+    }
+    function clearInv(){ inv.splice(0,inv.length); renderInv(); }
+    function downloadCSV(){
+      if(!inv.length){ alert('No items to export'); return; }
+      const rows = [['Item','Amount']].concat(inv.map(x=>[x.item, x.amt]));
+      const csv = rows.map(r=>r.map(v=>`"${String(v).replace(/"/g,'""')}"`).join(',')).join('\n');
+      const blob = new Blob([csv], {type:'text/csv'});
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = 'invoice.csv'; a.click();
+      URL.revokeObjectURL(a.href);
+    }
+
+    /* ---------- WhatsApp Lead ---------- */
+    function sendWhatsApp(){
+      const s = getSettings();
+      const phone = (s.phone||'').replace(/[^\d]/g,'');
+      if(!phone){ alert('Add your WhatsApp number in Settings'); return; }
+      const name = encodeURIComponent($('leadName').value.trim());
+      const service = encodeURIComponent($('leadService').value.trim());
+      const msg = encodeURIComponent($('leadMsg').value.trim());
+      const text = `Hello, I need a quote.%0AName: ${name}%0AService: ${service}%0AMessage: ${msg}`;
+      const url = `https://wa.me/${phone}?text=${text}`;
+      window.open(url,'_blank');
+    }
+
+    /* ---------- Init ---------- */
+    (function init(){
+      document.title = getSettings().title || document.title;
+      renderAffiliates();
+      renderCustomHTML();
+    })();
+  </script>
+</body>
+</html>
