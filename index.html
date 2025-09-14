@@ -484,6 +484,15 @@
       renderAffiliates();
       renderCustomHTML();
     })();
-  </script>
+  <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const params = new URLSearchParams(window.location.search);
+    const isAdmin = params.get('admin') === '1';
+    const settingsBtn = document.querySelector('button.btn.btn-alt');
+    if (settingsBtn && !isAdmin) {
+      settingsBtn.style.display = 'none';
+    }
+  });
+</script>
 </body>
 </html>
